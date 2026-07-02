@@ -5,6 +5,7 @@ export const App = () => {
   const [tasks, setTasks] = useState([{}]);
   const [title, settitle] = useState("");
   const [details, setdetails] = useState("");
+  const [error, setError] = useState("");
 
   const TaskToggle = (toggle) => {
     settaskToggle(toggle); 
@@ -54,19 +55,40 @@ const UpdateTaskFunc = async (id, status) => {
     GetTaskfunc();
   }
 
-  const AddTaskfunc = async() => {
+const AddTaskfunc = async () => {
 
-    const res = await fetch("http://localhost:5000/api/addTasks",{
-      method: "POST",
-      headers: {"Content-Type" : "application/json"},
-      body: JSON.stringify({title, details})
-    });
-    if(!res.ok){
-      console.error("error occored while adding task");
-    };
-    const rdata = await res.json();
-    GetTaskfunc();
+  if (title.trim() === "") {
+    setError("Title field is required");
+    setTimeout(() => setError(""), 2500);
+    return;
   }
+
+  if (details.trim() === "") {
+    setError("Details field is required");
+    setTimeout(() => setError(""), 2500);
+    return;
+  }
+
+  setError("");
+
+  const res = await fetch("http://localhost:5000/api/addTasks", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title, details })
+  });
+
+  if (!res.ok) {
+    console.error("error occurred while adding task");
+    return;
+  }
+
+  await res.json();
+
+  settitle("");
+  setdetails("");
+
+  GetTaskfunc();
+};
 
   useEffect(() => {
     GetTaskfunc();
@@ -96,7 +118,15 @@ const UpdateTaskFunc = async (id, status) => {
 
 {/* Main Body */}
       <main className="flex flex-col items-center min-h-screen w-full bg-linear-to-br from-slate-50 via-amber-50/30 to-blue-50/20 px-4 py-6 font-sans antialiased selection:bg-amber-100">
-        
+
+      {error && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-bounce">
+          <div className="bg-red-500 text-white px-6 py-3 rounded-xl shadow-xl font-semibold">
+            ⚠️ {error}
+          </div>
+        </div>
+      )}
+
 {/* Navigation Bar & Form View */}
         {taskToggle === "" && (
           <>
@@ -129,22 +159,28 @@ const UpdateTaskFunc = async (id, status) => {
 
               <div className="flex flex-col gap-3.5 mt-2">
                 <div className="relative">
-                  <input 
-                    className="w-full bg-slate-50/60 focus:bg-white text-slate-700 rounded-xl px-4 py-3 border border-slate-200/70 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 placeholder:text-slate-400 outline-none transition-all duration-200 text-sm" 
-                    type="text" 
+                  <input
+                    className="w-full bg-slate-50/60 focus:bg-white text-slate-700 rounded-xl px-4 py-3 border border-slate-200/70 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 placeholder:text-slate-400 outline-none transition-all duration-200 text-sm"
+                    type="text"
                     placeholder="What's the Title"
                     value={title}
-                    onChange={(e) => {settitle(e.target.value)}} 
+                    onChange={(e) => {
+                      settitle(e.target.value);
+                      setError("");
+                    }}
                   />
                 </div>
 
                 <div className="relative">
-                  <input 
-                    className="w-full bg-slate-50/60 focus:bg-white text-slate-700 rounded-xl px-4 py-3 border border-slate-200/70 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 placeholder:text-slate-400 outline-none transition-all duration-200 text-sm" 
-                    type="text" 
+                  <input
+                    className="w-full bg-slate-50/60 focus:bg-white text-slate-700 rounded-xl px-4 py-3 border border-slate-200/70 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/10 placeholder:text-slate-400 outline-none transition-all duration-200 text-sm"
+                    type="text"
                     placeholder="What's the details"
-                    value={details} 
-                    onChange={(e) => {setdetails(e.target.value)}}
+                    value={details}
+                    onChange={(e) => {
+                      setdetails(e.target.value);
+                      setError("");
+                    }}
                   />
                 </div>
               </div>

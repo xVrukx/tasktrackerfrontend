@@ -12,7 +12,7 @@ export const App = () => {
   }
 
   const GetTaskfunc = async() => {
-    const res = await fetch("http://localhost:5000/api/getTasks",{
+    const res = await fetch("https://tasktrackerbackend-692n.onrender.com/getTasks",{
       method:"GET",
       headers:{"Content-Type":"application/json"}
     });
@@ -24,7 +24,7 @@ export const App = () => {
   }
 
 const UpdateTaskFunc = async (id, status) => {
-    const res = await fetch(`http://localhost:5000/api/updateTasks/${id}`, {
+    const res = await fetch(`https://tasktrackerbackend-692n.onrender.com/updateTasks/${id}`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const UpdateTaskFunc = async (id, status) => {
 };
 
   const DeleteTaskfunc = async(id) => {
-    const res = await fetch(`http://localhost:5000/api/deleteTasks/${id}`,{
+    const res = await fetch(`https://tasktrackerbackend-692n.onrender.com/deleteTasks/${id}`,{
       method:"POST",
       headers:{"Content-Type":"application/json"}
     });
@@ -71,7 +71,7 @@ const AddTaskfunc = async () => {
 
   setError("");
 
-  const res = await fetch("http://localhost:5000/api/addTasks", {
+  const res = await fetch("https://tasktrackerbackend-692n.onrender.com/addTasks", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ title, details })
